@@ -1,0 +1,23 @@
+---
+# Which version of Magento to deploy
+magento_version: 1.8.1.0
+
+# These are the magento database settings
+magento_db_name: magento 
+magento_db_user: magento
+magento_db_password: secret
+
+# You shouldn't need to change this.
+mysql_port: 3306
+
+# This is used for the nginx server configuration, but # access to the
+# magento site is not restricted by a # named host.
+server_hostname: YOURDOMAIN.COM
+
+# Magento Admin info
+magento_admin_first: admin
+magento_admin_last: lastname
+magento_admin_email: admin@admin.com
+magento_admin_user: admin
+magento_admin_pass: 102030AA
+magento_domain: http://YOURDOMAIN.COM/

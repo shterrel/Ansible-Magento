@@ -1,0 +1,87 @@
+# Ansible playbook to create a Rackspace Cloud Server
+#
+# The playbook creates a new server and installs some packages
+#
+# It injects 2 files in to the new instance:
+# * SSH key to be used later, when installing packages
+# * A demo test.txt file
+#
+# Run with: ansible-playbook -i hosts.yml rax-multi-magento.yml -vvv
+---
+- name: Build environment
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - name: DB Server create request
+      local_action:
+        module: rax
+        credentials: rax.py
+        name: magento-db
+        flavor: performance1-2
+        image: 41e59c5f-530b-423c-86ec-13b23de49288
+        disk_config: manual
+        networks:
+          - public
+          - private
+        region: IAD
+        state: present
+        group: db
+        wait: yes
+      register: rax
+
+    - name: Add servers to DB host group
+      local_action:
+        module: add_host
+        hostname: "{{ item.name }}"
+        ansible_ssh_host: "{{ item.rax_accessipv4 }}"
+        ansible_ssh_pass: "{{ item.rax_adminpass }}"
+        ansible_ssh_user: root
+        groupname: db
+      with_items: rax.success
+      when: rax.action == 'create'
+
+    - name: WEB Server create request
+      local_action:
+        module: rax
+        credentials: rax.py
+        name: magento-web
+        flavor: performance1-2
+        image: 41e59c5f-530b-423c-86ec-13b23de49288
+        disk_config: manual
+        networks:
+          - public
+          - private
+        region: IAD
+        state: present
+        group: web
+        wait: yes
+      register: rax
+
+    - name: Add servers to web host group
+      local_action:
+        module: add_host
+        hostname: "{{ item.name }}"
+        ansible_ssh_host: "{{ item.rax_accessipv4 }}"
+        ansible_ssh_pass: "{{ item.rax_adminpass }}"
+        ansible_ssh_user: root
+        groupname: web
+      with_items: rax.success
+      when: rax.action == 'create'
+
+- name: Install MySQL
+  hosts: db
+
+  roles:
+    - common
+    - mysql
+
+- name: Install magento, httpd, PHP and Varnish
+  hosts: web
+
+  roles:
+    - common
+    - httpd
+    - php
+    - magento
+    - varnish
