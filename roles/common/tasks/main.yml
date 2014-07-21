@@ -2,14 +2,17 @@
 - name: Install libselinux-python
   yum: name=libselinux-python state=present
   
-- name: Copy Epel Release
-  copy: src=epel-release-6-8.noarch.rpm dest=/root
+#- name: Copy Epel Release
+ # copy: src=epel-release-6-8.noarch.rpm dest=/root
   
 - name: Copy IUS Release
   copy: src=ius-release-1.0-11.ius.el6.noarch.rpm dest=/root
   
+#- name: Install Epel
+ # shell: chdir=/root rpm -Uvh epel-release-6-8.noarch.rpm
+
 - name: Install IUS and Epel
-  shell: chdir=/root rpm -Uvh *.rpm
+  shell: chdir=/root rpm -Uvh ius-release-1.0-11.ius.el6.noarch.rpm
   
 #- name: Copy the EPEL repository definition
  # copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
