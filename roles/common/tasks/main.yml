@@ -5,14 +5,14 @@
 - name: Copy Epel Release
   copy: src=epel-release-6-8.noarch.rpm dest=/root
   
-- name: Copy Remi Release
-  copy: src=remi-release-6.rpm dest=/root
+- name: Copy IUS Release
+  copy: src=ius-release-1.0-11.ius.el6.noarch.rpm dest=/root
   
-- name: Install Remi and Epel
-  shell: chdir=/root rpm -Uvh remi-release-6*.rpm
+- name: Install IUS and Epel
+  shell: chdir=/root rpm -Uvh *.rpm
   
-- name: Copy the EPEL repository definition
-  copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
+#- name: Copy the EPEL repository definition
+ # copy: src=remi.repo dest=/etc/yum.repos.d/remi.repo
 
 #- name: Create the GPG key for EPEL
   #copy: src=RPM-GPG-KEY-EPEL-6 dest=/etc/pki/rpm-gpg
